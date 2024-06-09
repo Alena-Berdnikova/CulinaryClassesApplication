@@ -1,22 +1,24 @@
 package org.berdnikova.culinary.model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.Set;
 
-@Entity
 @Data
-public class CulinaryClass {
+@Entity
+public class ApplicationUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    private String name;
-    private String instructor;
-    private int duration;
-    private LocalDate startDate;
+    @NotEmpty
+    private String email;
+
+    @NotEmpty
+    private String password;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<ApplicationUser> applicationUser;
+    private Set<CulinaryClass> culinaryClass;
 }
