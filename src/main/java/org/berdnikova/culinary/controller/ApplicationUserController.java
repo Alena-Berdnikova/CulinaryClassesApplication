@@ -1,28 +1,20 @@
 package org.berdnikova.culinary.controller;
 
-
 import org.berdnikova.culinary.model.ApplicationUser;
 import org.berdnikova.culinary.service.ApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/users")
 public class ApplicationUserController {
 
     @Autowired
     private ApplicationUserService userService;
-
-    @GetMapping("/all")
-    public String getAllUsers(Model model) {
-        List<ApplicationUser> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "all-users";
-    }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -31,33 +23,29 @@ public class ApplicationUserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") ApplicationUser user) {
-        userService.saveUser(user);
-        return "redirect:/users/login";
+    public String registerUser(@ModelAttribute("user") @Valid ApplicationUser user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "register";
+        }
+        userService.save(user);
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String login() {
         return "login";
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Integer id, Model model) {
-        ApplicationUser user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "edit-user";
+    @PostMapping("/login")
+    public String loginForm(@ModelAttribute("user") @Valid ApplicationUser user) {
+        System.out.println(user.getEmail());
+        System.out.println(user.getPassword());
+        return "redirect:/home";
     }
 
-    @PostMapping("/edit/{id}")
-    public String editUser(@PathVariable("id") Integer id, @ModelAttribute("user") ApplicationUser user) {
-        user.setId(id);
-        userService.saveUser(user);
-        return "redirect:/users/all";
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Integer id) {
-        userService.deleteUser(id);
-        return "redirect:/users/all";
+    @GetMapping("/home")
+    public String home() {
+        return "home";
     }
 }
+
