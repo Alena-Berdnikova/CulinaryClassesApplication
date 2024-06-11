@@ -14,6 +14,18 @@ public class ApplicationUser {
     @NotEmpty(message = "Email is required")
     private String email;
 
+    @NotEmpty(message = "Name is required")
+    private String name;
+
+    @NotEmpty(message = "Phone number is required")
+    private String phone;
+
     @NotEmpty(message = "Password is required")
     private String password;
+
+    @NotEmpty(message = "Classes selection is required")
+    private String classes;
+
+    @NotEmpty(message = "Contact method is required")
+    private String contact;
 }

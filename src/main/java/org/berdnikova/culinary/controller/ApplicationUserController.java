@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.security.Principal;
+
 @Controller
 public class ApplicationUserController {
 
@@ -32,18 +34,22 @@ public class ApplicationUserController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String showLoginForm() {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String loginForm(@ModelAttribute("user") @Valid ApplicationUser user) {
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
-        return "redirect:/home";
-    }
+//    @PostMapping("/login")
+//    public String loginUser(@ModelAttribute("user") ApplicationUser user) {
+//        System.out.println(user.getEmail());
+//        System.out.println(user.getPassword());
+//        return "redirect:/cookingclasses";
+//    }
 
-    @GetMapping("/home")
+    @GetMapping("/cookingclasses")
+    public String cookingclasses() {
+        return "cookingclasses";
+    }
+    @GetMapping("/")
     public String home() {
         return "home";
     }

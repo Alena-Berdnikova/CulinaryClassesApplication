@@ -3,19 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const password = document.getElementById("password");
     const login = document.getElementById("login");
 
-    email.addEventListener("blur", (e) => {
-        isValidEmail(email);
-    });
-    password.addEventListener("blur", (e) => {
-        isValidPassword(password);
-    });
-    login.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (isValidEmail(email) && isValidPassword(password)) {
-            document.getElementById("form").submit();
-        }
-    });
-
     const isValidEmail = (email) => {
         const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const emailValue = email.value.trim();
@@ -71,4 +58,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return true;
     };
+
+    email.addEventListener("blur", (e) => {
+        isValidEmail(email);
+    });
+    password.addEventListener("blur", (e) => {
+        isValidPassword(password);
+    });
+    login.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (isValidEmail(email) && isValidPassword(password)) {
+            document.getElementById("form").submit();
+        }
+    });
+
+
 });
