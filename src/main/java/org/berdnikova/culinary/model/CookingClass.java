@@ -17,6 +17,7 @@ public class CookingClass {
     private String name;
     private String duration;
     private Date startDate;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id")

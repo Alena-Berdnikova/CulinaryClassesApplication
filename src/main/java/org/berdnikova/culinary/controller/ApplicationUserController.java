@@ -53,5 +53,10 @@ public class ApplicationUserController {
     public String home() {
         return "home";
     }
+
+    @GetMapping("/current-user")
+    public ApplicationUser getCurrentUser() {
+        return userService.getCurrentUser();
+    }
 }
 

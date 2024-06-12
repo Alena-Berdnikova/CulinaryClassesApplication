@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,10 @@
             color: #323232;
             margin: 0;
             padding: 0;
+        }
+        button {
+            color: #323232;
+            background: #6db193;
         }
         .container {
             display: flex;
@@ -41,6 +45,10 @@
         }
         td {
             background-color: #f4e5c2;
+        }
+        img {
+            width: 50px;
+            height: 44px;
         }
         .flex-container {
             display: flex;
@@ -78,24 +86,23 @@
                     <td>${cookingClass.instructor.name}</td>
                     <td>${cookingClass.duration}</td>
                     <td>${new Date(cookingClass.startDate).toLocaleDateString()}</td>
+                    <td>${cookingClass.price}</td>
                     <td>
-                        <button onclick="enroll(${cookingClass.id})" id="enroll-btn-${cookingClass.id}">Enroll</button>
-                        <span id="enrolled-text-${cookingClass.id}" style="display:none;">Enrolled</span>
-                    </td>
+                    <button onclick="addToCart(${cookingClass.id})" id="enroll-btn-${cookingClass.id}">Add to Cart</button>
+                    <span id="enrolled-text-${cookingClass.id}" style="display:none;">Added to Cart</span>
+                </td>
                 `;
                     tableBody.appendChild(row);
                 });
             }
 
-            async function enroll(classId) {
-                const studentId = 1; // Replace with the actual student ID from your session or context
-                await fetch(`/cooking-classes/${classId}/enroll/${studentId}`, {
+            async function addToCart(classId) {
+                await fetch(`/cooking-classes/${classId}/add-to-cart`, {
                     method: 'POST'
                 });
                 document.getElementById(`enroll-btn-${classId}`).style.display = 'none';
                 document.getElementById(`enrolled-text-${classId}`).style.display = 'inline';
             }
-
             document.addEventListener('DOMContentLoaded', () => {
                 sortClasses('name');
             });
@@ -103,6 +110,9 @@
 </head>
 <body>
 <div class="container">
+    <div class="cart-icon" onclick="location.href='/cart'">
+        <img src="../images/cart-icon.png" alt="Cart">
+    </div>
     <header>
         <h1>Welcome to Our Culinary Classes</h1>
     </header>
@@ -130,7 +140,8 @@
             <th><button onclick="sortClasses('instructor.name')">Instructor</button></th>
             <th><button onclick="sortClasses('duration')">Duration</button></th>
             <th><button onclick="sortClasses('startDate')">Start Date</button></th>
-            <th>Action</th>
+            <th>Price</th>
+            <th>Add to cart</th>
         </tr>
         </thead>
         <tbody id="classes-body">

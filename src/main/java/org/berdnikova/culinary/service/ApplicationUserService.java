@@ -3,6 +3,8 @@ package org.berdnikova.culinary.service;
 import org.berdnikova.culinary.dao.ApplicationUserRepository;
 import org.berdnikova.culinary.model.ApplicationUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,14 @@ public class ApplicationUserService {
 
     public ApplicationUser findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+    public ApplicationUser getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            return userRepository.findByEmail(username);
+        } else {
+            return null;
+        }
     }
 }

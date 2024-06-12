@@ -7,6 +7,7 @@ import org.berdnikova.culinary.service.ApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,18 @@ public class CookingClassController {
             return cookingClass;
         } else {
             throw new RuntimeException("Class or Student not found");
+        }
+    }
+
+    @PostMapping("/{classId}/add-to-cart")
+    public void addToCart(@PathVariable Long classId, Principal user) {
+        Optional<CookingClass> cookingClassOpt = cookingClassService.findById(classId);
+
+        if (cookingClassOpt.isPresent()) {
+            CookingClass cookingClass = cookingClassOpt.get();
+            cookingClassService.addToCart(cookingClass, user.getName());
+        } else {
+            throw new RuntimeException("Class or User not found");
         }
     }
 }
