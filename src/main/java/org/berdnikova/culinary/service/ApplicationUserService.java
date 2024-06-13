@@ -20,6 +20,9 @@ public class ApplicationUserService {
     private PasswordEncoder passwordEncoder;
 
     public ApplicationUser save(ApplicationUser user) {
+        return userRepository.save(user);
+    }
+    public ApplicationUser create(ApplicationUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

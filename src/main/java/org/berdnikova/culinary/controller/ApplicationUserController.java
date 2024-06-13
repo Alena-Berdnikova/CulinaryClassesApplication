@@ -29,7 +29,7 @@ public class ApplicationUserController {
         if (result.hasErrors()) {
             return "register";
         }
-        userService.save(user);
+        userService.create(user);
         return "redirect:/login";
     }
 
@@ -38,12 +38,20 @@ public class ApplicationUserController {
         return "login";
     }
 
-//    @PostMapping("/login")
-//    public String loginUser(@ModelAttribute("user") ApplicationUser user) {
-//        System.out.println(user.getEmail());
-//        System.out.println(user.getPassword());
-//        return "redirect:/cookingclasses";
-//    }
+    @PutMapping("/update")
+    public String updateProfile(@RequestParam String name, @RequestParam String phone, Principal principal) {
+        ApplicationUser user = userService.findByEmail(principal.getName());
+        user.setName(name);
+        user.setPhone(phone);
+        userService.save(user);
+        return "cookingclasses";
+    }
+    @GetMapping("/editprofile")
+    public String showEditProfileForm(Model model, Principal principal) {
+        ApplicationUser user = userService.findByEmail(principal.getName());
+        model.addAttribute("user", user);
+        return "editprofile";
+    }
 
     @GetMapping("/cookingclasses")
     public String cookingclasses() {
