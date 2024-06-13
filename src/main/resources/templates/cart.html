@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #295f4e;
+            color: #323232;
+            margin: 0;
+            padding: 0;
+        }
+        button {
+            color: #323232;
+            background: #6db193;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #6db193;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #6db193 3px solid;
+        }
+        header a, .cart-total {
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            list-style: none;
+        }
+        header li {
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            background-color: #f4e5c2;
+        }
+        table, th, td {
+            border: 1px solid;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #6db193;
+        }
+        td {
+            background-color: #f4e5c2;
+        }
+    </style>
+    <script>
+        async function loadCartItems() {
+            const response = await fetch('/cart/items');
+            const cartItems = await response.json();
+            displayCartItems(cartItems);
+        }
+        async function deleteCartItem(itemId) {
+            const response = await fetch(`/cart/items/${itemId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                loadCartItems();
+            } else {
+                alert('Failed to delete item from cart');
+            }
+        }
+
+        function displayCartItems(cartItems) {
+            const tableBody = document.getElementById('cart-body');
+            let total = 0;
+            tableBody.innerHTML = '';
+            cartItems.forEach(item => {
+                total += item.cookingClass.price;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.cookingClass.name}</td>
+                    <td>${item.cookingClass.price}</td>
+                    <td>
+                        <button onclick="deleteCartItem(${item.id})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            document.getElementById('cart-total').innerText = `Total: $${total}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCartItems);
+    </script>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Your Cart</h1>
+    </div>
+</header>
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>Class</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="cart-body">
+        <!-- Cart items will be here -->
+        </tbody>
+    </table>
+    <div class="cart-total" id="cart-total"></div>
+</div>
+</body>
+</html>

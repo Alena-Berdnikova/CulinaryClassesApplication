@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooking Classes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #295f4e;
+            color: #323232;
+            margin: 0;
+            padding: 0;
+        }
+        button {
+            color: #323232;
+            background: #6db193;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        header {
+            width: 100%;
+            background-color: #295f4e;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #f4e5c2;
+        }
+        th, td {
+            border: 1px solid #295f4e;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #6db193;
+        }
+        td {
+            background-color: #f4e5c2;
+        }
+        img {
+            width: 50px;
+            height: 44px;
+        }
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 100%;
+        }
+        .flex-item {
+            background-color: #f4e5c2;
+            padding: 20px;
+            margin: 10px;
+            flex: 1 1 calc(33.333% - 40px);
+            box-sizing: border-box;
+        }
+        @media (max-width: 768px) {
+            .flex-item {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+        <script>
+            async function sortClasses(sortBy) {
+                const response = await fetch(`/cooking-classes?sortBy=${sortBy}`);
+                const classes = await response.json();
+                displayClasses(classes);
+            }
+
+            function displayClasses(classes) {
+                const tableBody = document.getElementById('classes-body');
+                tableBody.innerHTML = '';
+                classes.forEach(cookingClass => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${cookingClass.name}</td>
+                    <td>${cookingClass.instructor.name}</td>
+                    <td>${cookingClass.duration}</td>
+                    <td>${new Date(cookingClass.startDate).toLocaleDateString()}</td>
+                    <td>${cookingClass.price}</td>
+                    <td>
+                    <button onclick="addToCart(${cookingClass.id})" id="enroll-btn-${cookingClass.id}">Add to Cart</button>
+                    <span id="enrolled-text-${cookingClass.id}" style="display:none;">Added to Cart</span>
+                </td>
+                `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            async function addToCart(classId) {
+                await fetch(`/cooking-classes/${classId}/add-to-cart`, {
+                    method: 'POST'
+                });
+                document.getElementById(`enroll-btn-${classId}`).style.display = 'none';
+                document.getElementById(`enrolled-text-${classId}`).style.display = 'inline';
+            }
+            document.addEventListener('DOMContentLoaded', () => {
+                sortClasses('name');
+            });
+        </script>
+</head>
+<body>
+<div class="container">
+    <div class="cart-icon" onclick="location.href='/cart'">
+        <img src="../images/cart-icon.png" alt="Cart">
+    </div>
+    <div>
+        <button onclick="location.href='/editprofile'">Edit Profile</button>
+    </div>
+    <header>
+        <h1>Welcome to Our Culinary Classes</h1>
+    </header>
+    <div>
+        <video controls autoplay loop muted style="max-width: 100%; height: auto; border: 5px solid #6db193;">
+            <source src="../video/Duck.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="flex-container">
+        <div class="flex-item">
+            <h2>Basic Culinary Skills</h2>
+            <p>Learn the basics of cooking, from knife skills to essential techniques.</p>
+        </div>
+        <div class="flex-item">
+            <h2>Advanced Culinary Arts</h2>
+            <p>Take your cooking to the next level with advanced techniques and recipes.</p>
+        </div>
+    </div>
+    <h1>Cooking Classes</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th><button onclick="sortClasses('name')">Class</button></th>
+            <th><button onclick="sortClasses('instructor.name')">Instructor</button></th>
+            <th><button onclick="sortClasses('duration')">Duration</button></th>
+            <th><button onclick="sortClasses('startDate')">Start Date</button></th>
+            <th>Price</th>
+            <th>Add to cart</th>
+        </tr>
+        </thead>
+        <tbody id="classes-body">
+        <!-- Classes will be here -->
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
